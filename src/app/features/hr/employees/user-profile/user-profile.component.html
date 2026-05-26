@@ -1,0 +1,134 @@
+<div class="profile-wrapper">
+  <!-- LEFT CARD -->
+  <div class="profile-card">
+    <!-- <img
+  class="avatar"  (click)="openImagePreview()"
+  [src]="(authService.currentUser$ | async)?.profileImageUrl || ('https://ui-avatars.com/api/?name=' + ((authService.currentUser$ | async)?.fullName || 'User'))"
+     
+  (click)="openImagePreview()"
+/> -->
+
+    <img
+      class="avatar"
+      (click)="openImagePreview()"
+      src="assets/soni-profile.jpg"
+      (click)="openImagePreview()"
+    />
+
+    <h2>{{ form.value.firstName }} {{ form.value.lastName }}</h2>
+
+    <p class="subtitle">{{ form.value.city }} {{ form.value.country }}</p>
+
+    <button class="edit-btn" (click)="toggleEdit()">
+      {{ isEditMode ? "Cancel" : "Edit Profile" }}
+    </button>
+
+    <!-- <button class="edit-btn" (click)="toggleEdit()">
+      {{ isEditMode ? 'Cancel' : 'Edit Profile' }}
+    </button> -->
+  </div>
+
+  <!-- RIGHT CARD -->
+  <div class="form-card">
+    <h3>User Information</h3>
+
+    <form [formGroup]="form">
+      <div class="row">
+        <input
+          formControlName="firstName"
+          placeholder="First Name"
+          [readonly]="!isEditMode"
+        />
+        <input
+          formControlName="lastName"
+          placeholder="Last Name"
+          [readonly]="!isEditMode"
+        />
+      </div>
+
+      <div class="row">
+        <input
+          formControlName="phoneNumber"
+          placeholder="Phone Number"
+          [readonly]="!isEditMode"
+        />
+
+        <!-- GENDER DROPDOWN -->
+        <select formControlName="gender" [disabled]="!isEditMode">
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <textarea
+        formControlName="address"
+        rows="2"
+        placeholder="Address"
+        [readonly]="!isEditMode"
+      ></textarea>
+
+      <div class="row">
+        <input
+          formControlName="city"
+          placeholder="City"
+          [readonly]="!isEditMode"
+        />
+        <input
+          formControlName="country"
+          placeholder="Country"
+          [readonly]="!isEditMode"
+        />
+      </div>
+
+      <!-- JOB TITLE + DEPARTMENT -->
+      <div class="row">
+        {{ roles }}
+        <select
+          [disabled]="
+            !isEditMode || !(roles.includes('Admin') || roles.includes('HR'))
+          "
+          formControlName="jobTitleId"
+        >
+          <option value="">Select Job Title</option>
+          <option *ngFor="let job of jobTitles" [value]="job.id">
+            {{ job.name }}
+          </option>
+        </select>
+
+        <select
+          [disabled]="!isEditMode && !roles.includes('User')"
+          formControlName="departmentId"
+        >
+          <option value="">Select Department</option>
+          <option *ngFor="let dept of departments" [value]="dept.id">
+            {{ dept.name }}
+          </option>
+        </select>
+      </div>
+
+      <button
+        class="save-btn"
+        type="button"
+        (click)="save()"
+        *ngIf="isEditMode"
+      >
+        Save Changes
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- IMAGE PREVIEW MODAL -->
+<div
+  class="image-modal-backdrop"
+  *ngIf="imagePreviewOpen"
+  (click)="closeImagePreview()"
+>
+  <div class="image-modal" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeImagePreview()">✕</button>
+
+    <img class="modal-preview-image" src="assets/soni-profile.jpg" />
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="container mt-3">
+
+  <h3>Employees</h3>
+
+  <p class="text-muted">Manage all employees from HR service</p>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="alert alert-info">
+    Loading employees...
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Table -->
+  <table class="table table-striped" *ngIf="!loading && employees.length">
+
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Department</th>
+        <th>Job Title</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let emp of employees; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ emp.fullName }}</td>
+        <td>{{ emp.email }}</td>
+        <td>{{ emp.department }}</td>
+        <td>{{ emp.jobTitle }}</td>
+      </tr>
+    </tbody>
+
+  </table>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && employees.length === 0" class="alert alert-warning">
+    No employees found
+  </div>
+
+</div>
