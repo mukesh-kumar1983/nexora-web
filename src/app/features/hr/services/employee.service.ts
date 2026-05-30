@@ -9,7 +9,7 @@ import { UserProfile } from '../models/user-profile';
   providedIn: 'root',
 })
 export class EmployeeService {
-  private baseUrl = `${environment.apiUrl}/users`;
+  private baseUrl = `${environment.apiUrl}/employees`;
 
   private currentUserSubject = new BehaviorSubject<UserProfile | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();

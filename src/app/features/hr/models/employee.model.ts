@@ -1,7 +1,11 @@
 export interface Employee {
   id: string;
-  fullName: string;
+  token?: string;
+  firstName?: string;
+  lastName?: string;
+  fullName?: string ;
   email: string;
   department: string;
   jobTitle: string;
+  
 }

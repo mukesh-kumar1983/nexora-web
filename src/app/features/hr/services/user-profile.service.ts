@@ -3,27 +3,36 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserProfile } from '../models/user-profile';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {
+  private baseUrl = environment.apiUrl  // via Ocelot gateway
 
-  private baseUrl = environment.apiUrl+'/me'; // via Ocelot gateway
+  constructor(
+    private http: HttpClient, 
+    private authService: AuthService)
+    {
 
-  constructor(private http: HttpClient) {}
+    }
 
   getMyProfile(): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${this.baseUrl}/me`);
   }
 
-  updateProfile(model: UserProfile): Observable<any> {
-    return this.http.put(`${this.baseUrl}/update`, model);
+  updateMyProfile(model: UserProfile): Observable<any> {
+    
+    return this.http.put(`${this.baseUrl}/me`, model);
   }
 
-  getJobTitles() {
-  return this.http.get<any[]>(`${this.baseUrl}/jobtitles`);
-}
+  uploadProfileImage(file: File) {
+    debugger
+    const formData = new FormData();
+    formData.append('file', file);
 
-getDepartments() {
-  return this.http.get<any[]>(`${this.baseUrl}/departments`);
-}
+    return this.http.post(
+      `${this.baseUrl}/me/upload-image`,
+      formData
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { RoleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
 
@@ -51,7 +52,15 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/hr/employees/user-profile/user-profile.component')
             .then(m => m.UserProfileComponent)
-      }
+      },
+      // {
+      //   path: 'new',
+      //   component: EmployeeCreateComponent,
+      //   canActivate: [RoleGuard],
+      //   data: {
+      //     roles: ['Admin', 'HR']
+      //   }
+      // }
     ]
   },
 

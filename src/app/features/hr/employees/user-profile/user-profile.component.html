@@ -1,134 +1,198 @@
+<small class="dirty-text" *ngIf="isFormDirty">
+  You have unsaved changes
+</small>
+
 <div class="profile-wrapper">
   <!-- LEFT CARD -->
   <div class="profile-card">
-    <!-- <img
-  class="avatar"  (click)="openImagePreview()"
-  [src]="(authService.currentUser$ | async)?.profileImageUrl || ('https://ui-avatars.com/api/?name=' + ((authService.currentUser$ | async)?.fullName || 'User'))"
-     
-  (click)="openImagePreview()"
-/> -->
 
-    <img
-      class="avatar"
-      (click)="openImagePreview()"
-      src="assets/soni-profile.jpg"
-      (click)="openImagePreview()"
-    />
+    <!-- PROFILE IMAGE -->
+    <div class="avatar-wrapper" (click)="isEditMode && fileInput.click()">
 
+      <img class="avatar" [src]="profileImageUrl" />
+
+      <div class="avatar-overlay" *ngIf="isEditMode">
+        <i class="bi bi-camera-fill"></i>
+        <span>Change Photo</span>
+      </div>
+
+    </div>
+
+    <!-- HIDDEN FILE INPUT -->
+    <input type="file"
+           #fileInput
+           hidden
+           accept="image/*"
+           (change)="onFileSelected($event)" />
+
+    <!-- USER INFO -->
     <h2>{{ form.value.firstName }} {{ form.value.lastName }}</h2>
 
-    <p class="subtitle">{{ form.value.city }} {{ form.value.country }}</p>
+    <p class="subtitle">
+      {{ form.value.city }} {{ form.value.country }}
+    </p>
 
+    <!-- EDIT BUTTON -->
     <button class="edit-btn" (click)="toggleEdit()">
       {{ isEditMode ? "Cancel" : "Edit Profile" }}
     </button>
 
-    <!-- <button class="edit-btn" (click)="toggleEdit()">
-      {{ isEditMode ? 'Cancel' : 'Edit Profile' }}
-    </button> -->
   </div>
 
-  <!-- RIGHT CARD -->
+  <!-- RIGHT CARD (RESTORED - IMPORTANT) -->
   <div class="form-card">
-    <h3>User Information</h3>
+
+    <h3 class="section-title">User Information</h3>
+    <hr class="section-divider" />
 
     <form [formGroup]="form">
+
+      <!-- 1st ROW: FIRST NAME + LAST NAME -->
       <div class="row">
-        <input
-          formControlName="firstName"
-          placeholder="First Name"
-          [readonly]="!isEditMode"
-        />
-        <input
-          formControlName="lastName"
-          placeholder="Last Name"
-          [readonly]="!isEditMode"
-        />
+        <div class="col-md-6 col-sm-12">
+          <div class="floating-group">
+            <label>First Name</label>
+            <input formControlName="firstName" [readonly]="!isEditMode" />
+
+            <small class="error" *ngIf="form.get('firstName')?.touched && form.get('firstName')?.hasError('required')">
+              First name is required
+            </small>
+          </div>
+        </div>
       </div>
 
-      <div class="row">
-        <input
-          formControlName="phoneNumber"
-          placeholder="Phone Number"
-          [readonly]="!isEditMode"
-        />
+      <div class="col-md-6 col-sm-12">
+        <div class="floating-group">
+          <label>Last Name</label>
+          <input formControlName="lastName"
+                 [readonly]="!isEditMode"
+                 placeholder=" " />
 
-        <!-- GENDER DROPDOWN -->
-        <select formControlName="gender" [disabled]="!isEditMode">
-          <option value="">Select Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-        </select>
+
+          <small class="error" *ngIf="isInvalid('lastName')">
+            Last name is required
+          </small>
+        </div>
       </div>
 
-      <textarea
-        formControlName="address"
-        rows="2"
-        placeholder="Address"
-        [readonly]="!isEditMode"
-      ></textarea>
-
+      <!-- 2nd ROW: EMAIL (FULL WIDTH, ROLE CONTROLLED) -->
       <div class="row">
-        <input
-          formControlName="city"
-          placeholder="City"
-          [readonly]="!isEditMode"
-        />
-        <input
-          formControlName="country"
-          placeholder="Country"
-          [readonly]="!isEditMode"
-        />
+        <div class="col-12">
+          <div class="floating-group">
+            <label>Email</label>
+            <input formControlName="email" [readonly]="true" />
+
+            <small class="error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
+              Email is required
+            </small>
+
+            <small class="error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+              Invalid email format
+            </small>
+          </div>
+        </div>
       </div>
 
-      <!-- JOB TITLE + DEPARTMENT -->
+      <!-- 3rd ROW: GENDER (FULL WIDTH) -->
       <div class="row">
-        {{ roles }}
-        <select
-          [disabled]="
-            !isEditMode || !(roles.includes('Admin') || roles.includes('HR'))
-          "
-          formControlName="jobTitleId"
-        >
-          <option value="">Select Job Title</option>
-          <option *ngFor="let job of jobTitles" [value]="job.id">
-            {{ job.name }}
-          </option>
-        </select>
-
-        <select
-          [disabled]="!isEditMode && !roles.includes('User')"
-          formControlName="departmentId"
-        >
-          <option value="">Select Department</option>
-          <option *ngFor="let dept of departments" [value]="dept.id">
-            {{ dept.name }}
-          </option>
-        </select>
+        <div class="col-12">
+          <div class="floating-group">
+            <label>Gender</label>
+            <select formControlName="gender" [disabled]="!isEditMode">
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <button
-        class="save-btn"
-        type="button"
-        (click)="save()"
-        *ngIf="isEditMode"
-      >
-        Save Changes
-      </button>
+      <!-- 4th ROW: ADDRESS (FULL WIDTH) -->
+      <div class="row">
+        <div class="col-12">
+          <div class="floating-group">
+            <label>Address</label>
+            <textarea formControlName="address" rows="2" [readonly]="!isEditMode"></textarea>
+
+            <small class="error" *ngIf="form.get('address')?.touched && form.get('address')?.hasError('required')">
+              Address is required
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5th ROW: CITY + COUNTRY -->
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="floating-group">
+            <label>City</label>
+            <input formControlName="city" [readonly]="!isEditMode" />
+
+            <small class="error" *ngIf="form.get('city')?.touched && form.get('city')?.hasError('required')">
+              City is required
+            </small>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12">
+          <div class="floating-group">
+            <label>Country</label>
+            <input formControlName="country" [readonly]="!isEditMode" />
+
+            <small class="error" *ngIf="form.get('country')?.touched && form.get('country')?.hasError('required')">
+              Country is required
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6th ROW: JOB TITLE + DEPARTMENT -->
+      <div class="row">
+        <div class="col-md-6 col-sm-12">
+          <div class="floating-group">
+            <label>Job Title</label>
+            <select formControlName="jobTitleId"
+                    [disabled]="!isEditMode || !(roles.includes('Admin') || roles.includes('HR'))">
+              <option value="">Select Job Title</option>
+              <option *ngFor="let job of jobTitles" [value]="job.id">
+                {{ job.title }}
+              </option>
+            </select>
+            <small class="error" *ngIf="isInvalid('jobTitleId')">
+              Job Title is required
+            </small>
+
+          </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12">
+          <div class="floating-group">
+            <label>Department</label>
+            <select formControlName="departmentId"
+                    [disabled]="!isEditMode && !roles.includes('User')">
+              <option value="">Select Department</option>
+              <option *ngFor="let dept of departments" [value]="dept.id">
+                {{ dept.title }}
+              </option>
+            </select>
+
+            <small class="error" *ngIf="isInvalid('departmentId')">
+              Department is required
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- SAVE BUTTON -->
+      <div class="row">
+        <div class="col-12">
+          <button class="save-btn" type="button" (click)="save()" *ngIf="isEditMode" [disabled]="form.invalid">
+            Save Changes
+          </button>
+        </div>
+      </div>
+
     </form>
-  </div>
-</div>
-
-<!-- IMAGE PREVIEW MODAL -->
-<div
-  class="image-modal-backdrop"
-  *ngIf="imagePreviewOpen"
-  (click)="closeImagePreview()"
->
-  <div class="image-modal" (click)="$event.stopPropagation()">
-    <button class="close-btn" (click)="closeImagePreview()">✕</button>
-
-    <img class="modal-preview-image" src="assets/soni-profile.jpg" />
   </div>
 </div>

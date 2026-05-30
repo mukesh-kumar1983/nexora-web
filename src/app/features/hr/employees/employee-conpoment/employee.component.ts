@@ -13,7 +13,7 @@ import { Employee } from '../../models/employee.model';
 export class EmployeeComponent implements OnInit {
 
   employees: Employee[] = [];
-  loading = false;
+ loading = false;
   errorMessage = '';
 
   constructor(private employeeService: EmployeeService) {}
@@ -23,13 +23,14 @@ export class EmployeeComponent implements OnInit {
   }
 
   loadEmployees(): void {
-    this.loading = true;
+   this.loading = true;
 
     this.employeeService.getEmployees()
       .subscribe({
         next: (data) => {
           
           this.employees = data;
+          debugger
           this.loading = false;
         },
         error: () => {

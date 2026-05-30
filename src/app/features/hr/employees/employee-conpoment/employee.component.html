@@ -40,7 +40,7 @@
   </table>
 
   <!-- Empty State -->
-  <div *ngIf="!loading && employees.length === 0" class="alert alert-warning">
+  <div *ngIf="!loading && employees.length === 0 && !errorMessage" class="alert alert-warning">
     No employees found
   </div>
 

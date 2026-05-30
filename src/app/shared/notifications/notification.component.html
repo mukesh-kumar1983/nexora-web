@@ -1,0 +1,9 @@
+<div class="toast-container">
+  <div *ngFor="let n of (notifications$ | async)"
+       class="toast"
+       [ngClass]="n.type">
+
+    {{ n.message }}
+
+  </div>
+</div>
