@@ -1,0 +1,102 @@
+<div class="list-container">
+
+  <!-- ================= TOOLBAR ================= -->
+  <app-page-header title="Employee List"></app-page-header>
+  <div class="toolbar">
+
+    <!--<app-page-header title="Employee List"></app-page-header>-->
+
+    <div class="actions">
+
+      <button (click)="exportExcel()">
+        Export Excel
+      </button>
+
+      <button (click)="exportPDF()">
+        Export PDF
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ================= TABLE WRAPPER (IMPORTANT) ================= -->
+  <div class="table-wrapper">
+
+    <table>
+
+      <thead>
+        <tr>
+          <th class="col-name">Name</th>
+          <th class="col-email">Email</th>
+          <th class="col-dept">Department</th>
+          <th class="col-job">Job Title</th>
+          <th class="col-phone">Phone</th>
+          <th class="col-address">Address</th>
+          <th class="col-city">City</th>
+          <th class="col-country">Country</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let e of employees">
+
+          <td class="col-name">
+            {{ e.firstName }} {{ e.lastName }}
+          </td>
+
+          <td class="col-email">
+            {{ e.email }}
+          </td>
+
+          <td class="col-dept">
+            {{ e.departmentName }}
+          </td>
+
+          <td class="col-job">
+            {{ e.jobTitleName }}
+          </td>
+
+          <td class="col-phone">
+            {{ e.phoneNumber }}
+          </td>
+
+          <td class="col-address">
+            {{ e.address }}
+          </td>
+
+          <td class="col-city">
+            {{ e.city }}
+          </td>
+
+          <td class="col-country">
+            {{ e.country }}
+          </td>
+
+          <td class="col-actions">
+
+            <button class="icon-btn edit"
+                    (click)="editEmployee(e.id)"
+                    title="Edit Employee">
+              ✏️
+            </button>
+
+            <button class="icon-btn delete"
+                    (click)="deleteEmployee(e.id)"
+                    title="Delete Employee">
+              🗑️
+            </button>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>

@@ -1,0 +1,147 @@
+<div class="wizard-container">
+
+  <h2>Create Employee</h2>
+
+  <!-- STEP INDICATOR -->
+  <div class="stepper">
+    <div [class.active]="currentStep === 0">Personal</div>
+    <div [class.active]="currentStep === 1">Contact</div>
+    <div [class.active]="currentStep === 2">Address</div>
+    <div [class.active]="currentStep === 3">Work</div>
+  </div>
+
+  <form [formGroup]="form">
+
+    <!-- =========================
+         STEP 1: PERSONAL INFO
+    ========================== -->
+    <div *ngIf="currentStep === 0" formGroupName="personal">
+
+      <input formControlName="firstName" placeholder="First Name" />
+      <div class="error"
+           *ngIf="form.get('personal.firstName')?.touched && form.get('personal.firstName')?.invalid">
+        First Name is required
+      </div>
+
+      <input formControlName="lastName" placeholder="Last Name" />
+      <div class="error"
+           *ngIf="form.get('personal.lastName')?.touched && form.get('personal.lastName')?.invalid">
+        Last Name is required
+      </div>
+
+      <select formControlName="gender">
+        <option value="">Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+      <div class="error"
+           *ngIf="form.get('personal.gender')?.touched && form.get('personal.gender')?.invalid">
+        Gender is required
+      </div>
+
+    </div>
+
+    <!-- =========================
+         STEP 2: CONTACT
+    ========================== -->
+    <div *ngIf="currentStep === 1" formGroupName="contact">
+
+      <input formControlName="email" placeholder="Email" />
+      <div class="error"
+           *ngIf="form.get('contact.email')?.touched && form.get('contact.email')?.invalid">
+        Valid email is required
+      </div>
+
+      <input formControlName="phoneNumber" placeholder="Phone" />
+      <div class="error"
+           *ngIf="form.get('contact.phoneNumber')?.touched && form.get('contact.phoneNumber')?.invalid">
+        Phone number is required
+      </div>
+
+    </div>
+
+    <!-- =========================
+         STEP 3: ADDRESS
+    ========================== -->
+    <div *ngIf="currentStep === 2" formGroupName="address">
+
+      <input formControlName="address" placeholder="Address" />
+      <div class="error"
+           *ngIf="form.get('address.address')?.touched && form.get('address.address')?.invalid">
+        Address is required
+      </div>
+
+      <input formControlName="city" placeholder="City" />
+      <div class="error"
+           *ngIf="form.get('address.city')?.touched && form.get('address.city')?.invalid">
+        City is required
+      </div>
+
+      <input formControlName="country" placeholder="Country" />
+      <div class="error"
+           *ngIf="form.get('address.country')?.touched && form.get('address.country')?.invalid">
+        Country is required
+      </div>
+
+    </div>
+
+    <!-- =========================
+         STEP 4: WORK INFO
+    ========================== -->
+    <div *ngIf="currentStep === 3" formGroupName="work">
+
+      <select formControlName="departmentId">
+        <option value="">Department</option>
+        <option *ngFor="let d of departments" [value]="d.id">
+          {{ d.title }}
+        </option>
+      </select>
+
+      <div class="error"
+           *ngIf="form.get('work.departmentId')?.touched && form.get('work.departmentId')?.invalid">
+        Department is required
+      </div>
+
+      <select formControlName="jobTitleId">
+        <option value="">Job Title</option>
+        <option *ngFor="let j of jobTitles" [value]="j.id">
+          {{ j.title }}
+        </option>
+      </select>
+
+      <div class="error"
+           *ngIf="form.get('work.jobTitleId')?.touched && form.get('work.jobTitleId')?.invalid">
+        Job Title is required
+      </div>
+
+    </div>
+
+    <!-- =========================
+         NAVIGATION BUTTONS
+    ========================== -->
+    <div class="actions">
+
+      <button type="button"
+              (click)="prevStep()"
+              [disabled]="currentStep === 0">
+        Back
+      </button>
+
+      <button type="button"
+              *ngIf="currentStep < 3"
+              (click)="nextStep()">
+        Next
+      </button>
+
+      <button type="button"
+              *ngIf="currentStep === 3"
+              (click)="submit()">
+        Create Employee
+      </button>
+
+    </div>
+
+  </form>
+
+</div>

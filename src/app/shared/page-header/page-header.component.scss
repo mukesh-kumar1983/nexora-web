@@ -1,0 +1,21 @@
+.page-header {
+  margin-bottom: 16px;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+  /* LEFT BLUE LINE */
+  border-left: 4px solid #007bff;
+  padding-left: 12px;
+  letter-spacing: 0.2px;
+}
+
+.divider {
+  margin-top: 10px;
+  height: 1px;
+  background: #d1d5db; /* soft dark grey */
+  width: 100%;
+}

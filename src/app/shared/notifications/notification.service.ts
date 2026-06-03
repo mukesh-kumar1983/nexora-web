@@ -13,6 +13,7 @@ export class NotificationService {
   private counter = 0;
 
   show(type: NotificationType, message: string) {
+
     const current = this.notificationsSubject.value;
 
     const notification: NotificationMessage = {
@@ -26,6 +27,23 @@ export class NotificationService {
     setTimeout(() => this.remove(notification.id), 3000);
   }
 
+  showWithDuration(type: "info", message: string, duration: number = 5000) {
+    console.log('NOTIFICATION FIRED:', type, message);
+
+    const current = this.notificationsSubject.value;
+
+    const notification: NotificationMessage = {
+      id: ++this.counter,
+      type,
+      message
+    };
+
+    console.log('UPDATED LIST:', notification);
+    this.notificationsSubject.next([...current, notification]);
+
+    setTimeout(() => this.remove(notification.id), duration);
+  }
+
   success(message: string) {
     this.show('success', message);
   }
@@ -37,6 +55,8 @@ export class NotificationService {
   info(message: string) {
     this.show('info', message);
   }
+
+  
 
   warning(message: string) {
     this.show('warning', message);

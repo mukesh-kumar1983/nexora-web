@@ -35,7 +35,7 @@
         My Profile
       </a>
 
-      <a *ngIf="canManageEmployees(user)" routerLink="/employees/new" (click)="closeMenu()">
+      <a *ngIf="canManageEmployees(user)" routerLink="hr/employees/create-employee" (click)="closeMenu()">
         <i-lucide name="user-plus"></i-lucide>
         Add Employee
       </a>

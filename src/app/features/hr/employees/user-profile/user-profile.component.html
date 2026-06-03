@@ -1,24 +1,29 @@
-<small class="dirty-text" *ngIf="isFormDirty">
+<!-- Unsaved changes indicator -->
+<!--<small class="dirty-text" *ngIf="isFormDirty()">
   You have unsaved changes
-</small>
+</small>-->
 
 <div class="profile-wrapper">
-  <!-- LEFT CARD -->
+
+  <!-- =====================================================
+       LEFT PROFILE CARD
+  ====================================================== -->
   <div class="profile-card">
 
-    <!-- PROFILE IMAGE -->
-    <div class="avatar-wrapper" (click)="isEditMode && fileInput.click()">
+    <!-- PROFILE IMAGE (ALWAYS EDITABLE) -->
+    <div class="avatar-wrapper" (click)="fileInput.click()">
 
       <img class="avatar" [src]="profileImageUrl" />
 
-      <div class="avatar-overlay" *ngIf="isEditMode">
+      <!-- Upload hint overlay -->
+      <div class="avatar-overlay">
         <i class="bi bi-camera-fill"></i>
         <span>Change Photo</span>
       </div>
 
     </div>
 
-    <!-- HIDDEN FILE INPUT -->
+    <!-- Hidden file input -->
     <input type="file"
            #fileInput
            hidden
@@ -32,73 +37,71 @@
       {{ form.value.city }} {{ form.value.country }}
     </p>
 
-    <!-- EDIT BUTTON -->
-    <button class="edit-btn" (click)="toggleEdit()">
-      {{ isEditMode ? "Cancel" : "Edit Profile" }}
-    </button>
-
   </div>
 
-  <!-- RIGHT CARD (RESTORED - IMPORTANT) -->
+  <!-- =====================================================
+       RIGHT FORM CARD
+  ====================================================== -->
   <div class="form-card">
 
-    <h3 class="section-title">User Information</h3>
-    <hr class="section-divider" />
+    <app-page-header title="Employee List"></app-page-header>
+    
 
     <form [formGroup]="form">
 
-      <!-- 1st ROW: FIRST NAME + LAST NAME -->
+      <!-- NAME ROW -->
       <div class="row">
+
         <div class="col-md-6 col-sm-12">
           <div class="floating-group">
             <label>First Name</label>
-            <input formControlName="firstName" [readonly]="!isEditMode" />
+            <input formControlName="firstName" />
 
-            <small class="error" *ngIf="form.get('firstName')?.touched && form.get('firstName')?.hasError('required')">
+            <small class="error" *ngIf="isInvalid('firstName')">
               First name is required
             </small>
           </div>
         </div>
-      </div>
 
-      <div class="col-md-6 col-sm-12">
-        <div class="floating-group">
-          <label>Last Name</label>
-          <input formControlName="lastName"
-                 [readonly]="!isEditMode"
-                 placeholder=" " />
+        <div class="col-md-6 col-sm-12">
+          <div class="floating-group">
+            <label>Last Name</label>
+            <input formControlName="lastName" />
 
-
-          <small class="error" *ngIf="isInvalid('lastName')">
-            Last name is required
-          </small>
+            <small class="error" *ngIf="isInvalid('lastName')">
+              Last name is required
+            </small>
+          </div>
         </div>
+
       </div>
 
-      <!-- 2nd ROW: EMAIL (FULL WIDTH, ROLE CONTROLLED) -->
+      <!-- EMAIL (READ ONLY - AUTH IDENTITY FIELD) -->
       <div class="row">
-        <div class="col-12">
+        <div class="col-md-6 col-sm-12">
           <div class="floating-group">
             <label>Email</label>
-            <input formControlName="email" [readonly]="true" />
+            <input formControlName="email" />
+          </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+          <div class="floating-group">
+            <label>Phone Number</label>
+            <input formControlName="phoneNumber" />
 
-            <small class="error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
-              Email is required
-            </small>
-
-            <small class="error" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
-              Invalid email format
+            <small class="error" *ngIf="isInvalid('phoneNumber')">
+              Phone number is required
             </small>
           </div>
         </div>
       </div>
 
-      <!-- 3rd ROW: GENDER (FULL WIDTH) -->
+      <!-- GENDER -->
       <div class="row">
         <div class="col-12">
           <div class="floating-group">
             <label>Gender</label>
-            <select formControlName="gender" [disabled]="!isEditMode">
+            <select formControlName="gender">
               <option value="">Select Gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -108,28 +111,29 @@
         </div>
       </div>
 
-      <!-- 4th ROW: ADDRESS (FULL WIDTH) -->
+      <!-- ADDRESS -->
       <div class="row">
         <div class="col-12">
           <div class="floating-group">
             <label>Address</label>
-            <textarea formControlName="address" rows="2" [readonly]="!isEditMode"></textarea>
+            <textarea formControlName="address" rows="2"></textarea>
 
-            <small class="error" *ngIf="form.get('address')?.touched && form.get('address')?.hasError('required')">
+            <small class="error" *ngIf="isInvalid('address')">
               Address is required
             </small>
           </div>
         </div>
       </div>
 
-      <!-- 5th ROW: CITY + COUNTRY -->
+      <!-- CITY + COUNTRY -->
       <div class="row">
+
         <div class="col-md-6 col-sm-12">
           <div class="floating-group">
             <label>City</label>
-            <input formControlName="city" [readonly]="!isEditMode" />
+            <input formControlName="city" />
 
-            <small class="error" *ngIf="form.get('city')?.touched && form.get('city')?.hasError('required')">
+            <small class="error" *ngIf="isInvalid('city')">
               City is required
             </small>
           </div>
@@ -138,56 +142,54 @@
         <div class="col-md-6 col-sm-12">
           <div class="floating-group">
             <label>Country</label>
-            <input formControlName="country" [readonly]="!isEditMode" />
+            <input formControlName="country" />
 
-            <small class="error" *ngIf="form.get('country')?.touched && form.get('country')?.hasError('required')">
+            <small class="error" *ngIf="isInvalid('country')">
               Country is required
             </small>
           </div>
         </div>
+
       </div>
 
-      <!-- 6th ROW: JOB TITLE + DEPARTMENT -->
+      <!-- JOB + DEPARTMENT -->
       <div class="row">
+
         <div class="col-md-6 col-sm-12">
           <div class="floating-group">
             <label>Job Title</label>
             <select formControlName="jobTitleId"
-                    [disabled]="!isEditMode || !(roles.includes('Admin') || roles.includes('HR'))">
+                    [disabled]="!(roles.includes('Admin') || roles.includes('HR'))">
               <option value="">Select Job Title</option>
               <option *ngFor="let job of jobTitles" [value]="job.id">
                 {{ job.title }}
               </option>
             </select>
-            <small class="error" *ngIf="isInvalid('jobTitleId')">
-              Job Title is required
-            </small>
-
           </div>
         </div>
 
         <div class="col-md-6 col-sm-12">
           <div class="floating-group">
             <label>Department</label>
-            <select formControlName="departmentId"
-                    [disabled]="!isEditMode && !roles.includes('User')">
+            <select formControlName="departmentId">
               <option value="">Select Department</option>
               <option *ngFor="let dept of departments" [value]="dept.id">
                 {{ dept.title }}
               </option>
             </select>
-
-            <small class="error" *ngIf="isInvalid('departmentId')">
-              Department is required
-            </small>
           </div>
         </div>
+
       </div>
 
       <!-- SAVE BUTTON -->
       <div class="row">
         <div class="col-12">
-          <button class="save-btn" type="button" (click)="save()" *ngIf="isEditMode" [disabled]="form.invalid">
+          <button class="save-btn"
+                  type="button"
+                  (click)="save()"
+                  >
+
             Save Changes
           </button>
         </div>

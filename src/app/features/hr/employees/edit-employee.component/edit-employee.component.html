@@ -1,0 +1,122 @@
+<!-- =========================================================
+     NEXORA - EDIT EMPLOYEE PAGE (PROFESSIONAL UI)
+     Clean grouped layout with labels + structured sections
+========================================================= -->
+
+<div class="edit-container">
+
+  <!-- PAGE TITLE -->
+  <h2>Edit Employee</h2>
+
+  <form [formGroup]="form">
+
+    <!-- =====================================================
+       SECTION 1: PERSONAL INFORMATION
+  ====================================================== -->
+    <div class="section-title">Personal Information</div>
+
+    <div class="form-grid">
+
+      <!-- First Name -->
+      <div class="form-group">
+        <label>First Name</label>
+        <input formControlName="firstName" placeholder="Enter first name" />
+      </div>
+
+      <!-- Last Name -->
+      <div class="form-group">
+        <label>Last Name</label>
+        <input formControlName="lastName" placeholder="Enter last name" />
+      </div>
+
+      <!-- Email -->
+      <div class="form-group full-width">
+        <label>Email</label>
+        <input formControlName="email" placeholder="Enter email" />
+      </div>
+
+      <!-- Phone -->
+      <div class="form-group full-width">
+        <label>Phone Number</label>
+        <input formControlName="phoneNumber" placeholder="Enter phone number" />
+      </div>
+
+    </div>
+
+    <!-- =====================================================
+       SECTION 2: ADDRESS INFORMATION
+  ====================================================== -->
+    <div class="section-title">Address Information</div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Address</label>
+        <input formControlName="address" placeholder="Enter address" />
+      </div>
+
+      <div class="form-group">
+        <label>City</label>
+        <input formControlName="city" placeholder="Enter city" />
+      </div>
+
+      <div class="form-group">
+        <label>Country</label>
+        <input formControlName="country" placeholder="Enter country" />
+      </div>
+
+    </div>
+
+    <!-- =====================================================
+       SECTION 3: WORK DETAILS (UPDATED SINGLE ROW)
+  ===================================================== -->
+    <div class="section-title">Work Details</div>
+
+    <div class="form-grid work-grid">
+
+      <!-- Gender -->
+      <div class="form-group">
+        <label>Gender</label>
+        <select formControlName="gender">
+          <option value="">Select Gender</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <!-- Department -->
+      <div class="form-group">
+        <label>Department</label>
+        <select formControlName="departmentId">
+          <option value="">Select Department</option>
+          <option *ngFor="let d of departments" [value]="d.id">
+            {{ d.title }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Job Title -->
+      <div class="form-group">
+        <label>Job Title</label>
+        <select formControlName="jobTitleId">
+          <option value="">Select Job Title</option>
+          <option *ngFor="let j of jobTitles" [value]="j.id">
+            {{ j.title }}
+          </option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- =====================================================
+       SUBMIT BUTTON
+  ====================================================== -->
+    <div class="actions">
+      <button type="button" (click)="update()">
+        Update Employee
+      </button>
+    </div>
+
+  </form>
+</div>

@@ -1,152 +1,112 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { LoginRequest } from '../models/login-request.model';
-import { AuthResponse } from '../models/auth-response.model';
-import { jwtDecode } from 'jwt-decode';
 
 export interface CurrentUser {
-  fullName: string;
+  id: string;
   email: string;
-  roles: string[];
+  firstName: string;
+  lastName: string;
+  fullName: string;
   profileImageUrl?: string;
+  roles: string[];
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = `${environment.apiUrl}`;
 
-  // =========================
-  // AUTH STATE (SINGLE SOURCE)
-  // =========================
-  private currentUserSubject = new BehaviorSubject<CurrentUser | null>(null);
+  baseUrl = environment.apiUrl;
+
+  constructor(private http: HttpClient) { } 
+
+  private currentUserSubject = new BehaviorSubject<CurrentUser | null>(this.loadUser());
   currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-    this.rehydrateUser();
-  }
-
-  // =========================
-  // LOGIN
-  // =========================
-  login(request: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/login`, request);
-  }
-
-  // =========================
-  // TOKEN
-  // =========================
-  saveToken(token: string): void {
-    localStorage.setItem('access_token', token);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('access_token');
-  }
-
-  // =========================
-  // LOGOUT
-  // =========================
-  logout(): void {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('current_user');
-    this.currentUserSubject.next(null);
-  }
-
-  // =========================
-  // ROLE CHECK
-  // =========================
-  getRoles(): string[] {
-    const user = this.currentUserSubject.value;
-    return user?.roles ?? [];
-  }
-
-  hasRole(allowedRoles: string[]): boolean {
-    debugger
-    const roles = this.getRoles();
-   
-    return allowedRoles.some((r) => roles.includes(r));
-  }
-
-  // =========================
-  // DECODE TOKEN → USER
-  // =========================
-  private decodeUserFromToken(): CurrentUser | null {
-    const token = this.getToken();
-    if (!token) return null;
-
-    try {
-      const decoded: any = jwtDecode(token);
-
-      return {
-        fullName:
-          decoded[
-            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
-          ] || 'User',
-
-        email: decoded.email,
-
-        roles: this.extractRoles(decoded),
-      };
-    } catch {
-      return null;
-    }
-  }
-
-  private extractRoles(decoded: any): string[] {
-    const roleClaim =
-      decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-
-    if (!roleClaim) return [];
-
-    return Array.isArray(roleClaim) ? roleClaim : [roleClaim];
-  }
-
-  // =========================
-  // REHYDRATE ON REFRESH
-  // =========================
-  rehydrateUser(): void {
-    const user = this.decodeUserFromToken();
-
-    if (user) {
-      this.currentUserSubject.next(user);
-      localStorage.setItem('current_user', JSON.stringify(user));
-    }
-  }
-
-  // =========================
-  // MANUAL SET USER (FROM LOGIN API)
-  // =========================
-  setCurrentUser(user: CurrentUser): void {
-    this.currentUserSubject.next(user);
-    localStorage.setItem('current_user', JSON.stringify(user));
-  }
-
-  // =========================
+  // -------------------------
   // GET CURRENT USER
-  // =========================
+  // -------------------------
   getCurrentUser(): CurrentUser | null {
     return this.currentUserSubject.value;
   }
 
+  // -------------------------
+  // UPDATE PROFILE (IMPORTANT)
+  // -------------------------
+  updateProfile(profile: Partial<CurrentUser>) {
+
+    const current = this.currentUserSubject.value;
+    if (!current) return;
+
+    const updated: CurrentUser = {
+      ...current,
+      firstName: profile.firstName ?? current.firstName,
+      lastName: profile.lastName ?? current.lastName,
+      fullName: `${profile.firstName ?? current.firstName} ${profile.lastName ?? current.lastName}`,
+      profileImageUrl: profile.profileImageUrl ?? current.profileImageUrl
+    };
+
+    this.currentUserSubject.next(updated);
+    localStorage.setItem('user', JSON.stringify(updated));
+  }
+
+  // -------------------------
+  // LOAD FROM LOCAL STORAGE
+  // -------------------------
+  private loadUser(): CurrentUser | null {
+    const data = localStorage.getItem('user');
+    return data ? JSON.parse(data) : null;
+  }
+
+  // =========================
+  // LOGIN API
+  // =========================
+  login(model: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/login`, model);
+  }
+
+  logout(): void {
+
+    // 1. Clear BehaviorSubject (IMPORTANT for header update)
+    this.currentUserSubject.next(null);
+
+    // 2. Clear local storage
+    localStorage.removeItem('user');
+    localStorage.removeItem('current_user');
+    localStorage.removeItem('token'); // if you store JWT
+
+    // 3. Optional: clear session storage (if used)
+    sessionStorage.clear();
+
+  }
+
   isLoggedIn(): boolean {
-    const token = this.getToken();
+    return this.currentUserSubject.value !== null;
+  }
 
-    if (!token) return false;
+  getRoles(): string[] {
+    return this.currentUserSubject.value?.roles ?? [];
+  }
 
-    try {
-      const decoded: any = jwtDecode(token);
+  saveToken(token: string) {
+    localStorage.setItem('token', token);
+  }
 
-      // optional safety: check expiry
-      const exp = decoded?.exp;
-      if (!exp) return true;
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
 
-      return Date.now() < exp * 1000;
-    } catch {
-      return false;
-    }
+  setCurrentUser(user: CurrentUser): void {
+    this.currentUserSubject.next(user);
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  rehydrateUser(): void {
+    const data = localStorage.getItem('user');
+
+    if (!data) return;
+
+    const user: CurrentUser = JSON.parse(data);
+    this.currentUserSubject.next(user);
   }
 }

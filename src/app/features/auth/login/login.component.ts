@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService, CurrentUser } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -28,41 +28,48 @@ export class LoginComponent {
   ) {}
 
   login(): void {
-    if (this.form.invalid) {
-      return;
-    }
+
+    if (this.form.invalid) return;
 
     this.loading = true;
 
     this.authService.login(this.form.value as any).subscribe({
-      next: (response) => {
-        if (response.success === true) {
-          this.authService.saveToken(response.data.token);
-          this.authService.rehydrateUser(); // 🔥 IMPORTANT
 
-          const currentUser = {
+      next: (response) => {
+
+        if (response.success === true) {
+
+          // 1. Save token
+          this.authService.saveToken(response.data.token);
+
+          // 2. Build user object
+          const user: CurrentUser = {
+            id: response.data.id,
             fullName: `${response.data.firstName} ${response.data.lastName}`,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
             email: response.data.email,
             roles: response.data.roles ?? [],
-            profileImageUrl: response.data.profileImageUrl,
+            profileImageUrl: response.data.profileImageUrl
           };
 
-          this.authService.setCurrentUser(currentUser);
+          // 3. Set user (THIS triggers header update)
+          this.authService.setCurrentUser(user);
 
+          // 4. Navigate
           this.router.navigate(['/dashboard']);
+
         } else {
           this.errorMessage = response.message || 'Login failed';
           this.loading = false;
         }
       },
 
-      error: (response) => {
-        console.log(response);
+      error: (err) => {
         this.errorMessage =
-          response?.message + ' TraceId: ' + response?.error?.traceId ||
-          'Login failed';
+          err?.error?.message || 'Login failed';
         this.loading = false;
-      },
+      }
     });
   }
 }

@@ -3,7 +3,16 @@
        class="toast"
        [ngClass]="n.type">
 
-    {{ n.message }}
+    <div class="toast-icon">
+      <span *ngIf="n.type === 'success'">✓</span>
+      <span *ngIf="n.type === 'error'">✕</span>
+      <span *ngIf="n.type === 'warning'">⚠</span>
+      <span *ngIf="n.type === 'info'">ℹ</span>
+    </div>
+
+    <div class="toast-content">
+      {{ n.message }}
+    </div>
 
   </div>
 </div>

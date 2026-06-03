@@ -12,5 +12,9 @@ import { CommonModule } from '@angular/common';
 export class NotificationComponent {
   notifications$ = this.notificationService.notifications$;
 
-  constructor(private notificationService: NotificationService) { }
+  constructor(private notificationService: NotificationService) {
+    this.notifications$.subscribe(x => {
+      console.log('TOAST COMPONENT RECEIVED:', x);
+    });
+  }
 }
