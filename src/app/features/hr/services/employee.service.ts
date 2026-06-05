@@ -10,7 +10,7 @@ import { CreateEmployeeRequest } from '../models/create-employee';
   providedIn: 'root',
 })
 export class EmployeeService {
-  private baseUrl = `${environment.apiUrl}/employees`;
+  private baseUrl = `${environment.apiUrl}`;
 
   private currentUserSubject = new BehaviorSubject<UserProfile | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
@@ -31,8 +31,20 @@ export class EmployeeService {
   //  return this.http.post(`${environment.apiUrl}/employees`, payload);
   //}
 
-  getEmployees() {
-    return this.http.get<any[]>(`${environment.apiUrl}/employees`);
+  //getEmployees() {
+  //  return this.http.get<any[]>(`${environment.apiUrl}/employees`);
+  //}
+
+  ////getEmployees(query: any) {
+  ////  return this.http.get<any>(`${this.baseUrl}/employees`, {
+  ////    params: query
+  ////  });
+  ////}
+
+  getEmployees(query: any) {
+    return this.http.get<any>(`${this.baseUrl}/employees`, {
+      params: query
+    });
   }
 
   getEmployeeById(id: string) {

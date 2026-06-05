@@ -4,78 +4,134 @@ import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { ExportService } from '../../../../shared/services/export.service'; 
 
 import { EmployeeService } from '../../services/employee.service';
-import { PageHeaderComponent } from '../../../../shared/page-header/page-header.component';  
+import { GridConfig } from '../../../../shared/interfaces/grid-config';
+import { PageHeaderComponent } from '../../../../shared/page-header/page-header.component';
+import { DataGridComponent } from '../../../../shared/components/data-grid-component/DataGridComponent';
+
+import { Subject, switchMap, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-employee-list',
   standalone: true,
-  imports: [CommonModule, PageHeaderComponent],
+  imports: [CommonModule, PageHeaderComponent, DataGridComponent],
   templateUrl: './employee-list.component.html',
   styleUrls: ['./employee-list.component.scss']
 })
 export class EmployeeListComponent implements OnInit {
 
   employees: any[] = [];
-  loading = false;
+  totalCount = 0;
+
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
+  page = 1;
+  search = '';
+  sortColumn = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
+  gridConfig: GridConfig = {
+    apiUrl: '/employees',
+    pageSize: 10,
+    enableSearch: true,
+    enablePagination: true,
+    enableSorting: true,
+    columns: [
+      { field: 'firstName', header: 'First Name', sortable: true },
+      { field: 'lastName', header: 'Last Name', sortable: true },
+      { field: 'email', header: 'Email', sortable: true },
+      { field: 'departmentName', header: 'Department', sortable: true  },
+      { field: 'jobTitleName', header: 'Job Title', sortable: true },
+      { field: 'phoneNumber', header: 'Phone Number' , sortable: true },
+      { field: 'address', header: 'Address' },
+      { field: 'city', header: 'City', sortable: true },
+      { field: 'country', header: 'Country', sortable: true }
+    ]
+  };
 
   constructor(
     private employeeService: EmployeeService,
-    private router: Router
+    private router: Router,
+    private exportService: ExportService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+
+      switchMap(search => {
+
+        this.search = search;
+        this.page = 1;
+
+        return this.employeeService.getEmployees({
+          page: this.page,
+          pageSize: this.gridConfig.pageSize!,
+          search: this.search,
+          sortColumn: this.sortColumn,
+          sortDirection: this.sortDirection
+        });
+      }),
+
+      takeUntil(this.destroy$)
+    )
+      .subscribe(res => {
+        this.employees = res.items;
+        this.totalCount = res.totalCount;
+      });
+
     this.loadEmployees();
   }
 
-  /**
-   * Load all employees
-   */
   loadEmployees() {
-    this.loading = true;
-
-    this.employeeService.getEmployees()
-      .subscribe({
-        next: (res) => {
-          this.employees = res;
-          this.loading = false;
-        },
-        error: () => {
-          this.loading = false;
-        }
-      });
+    this.employeeService.getEmployees({
+      page: this.page,
+      pageSize: this.gridConfig.pageSize!,
+      search: this.search,
+      sortColumn: this.sortColumn,
+      sortDirection: this.sortDirection
+    }).subscribe(res => {
+      this.employees = res.items;
+      this.totalCount = res.totalCount;
+    });
   }
 
-  /**
-   * Navigate to edit page
-   */
+  onSearch(value: string) {
+    this.search = value;
+    this.page = 1;
+    this.loadEmployees();
+  }
+
+  onSort(event: any) {
+    this.sortColumn = event.column;
+    this.sortDirection = event.direction;
+    this.loadEmployees();
+  }
+
+  onPageChange(page: number) {
+    this.page = page;
+    this.loadEmployees();
+  }
+
   editEmployee(id: string) {
     this.router.navigate(['/employees/edit', id]);
   }
 
-  /**
-   * Delete employee (handled via interceptor notifications)
-   */
   deleteEmployee(id: string) {
-
-    const confirmDelete = confirm('Are you sure you want to delete this employee?');
-
-    if (!confirmDelete) return;
+    if (!confirm('Are you sure?')) return;
 
     this.employeeService.deleteEmployee(id)
-      .subscribe(() => {
-        // NO toast here (interceptor handles it)
-        this.loadEmployees();
-      });
+      .subscribe(() => this.loadEmployees());
   }
 
-  /**
- * Export employees to Excel file
- */
   exportExcel() {
 
-    const exportData = this.employees.map(e => ({
+    const data = this.employees.map(e => ({
       'First Name': e.firstName,
       'Last Name': e.lastName,
       'Email': e.email,
@@ -86,27 +142,17 @@ export class EmployeeListComponent implements OnInit {
       'Phone': e.phoneNumber
     }));
 
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = { Sheets: { Employees: worksheet }, SheetNames: ['Employees'] };
 
-    const workbook: XLSX.WorkBook = {
-      Sheets: { 'Employees': worksheet },
-      SheetNames: ['Employees']
-    };
-
-    XLSX.writeFile(workbook, 'nexora-employees.xlsx');
+    XLSX.writeFile(workbook, 'employees.xlsx');
   }
 
-  /**
- * Export employees to PDF file
- */
   exportPDF() {
 
     const doc = new jsPDF();
 
-    doc.setFontSize(14);
-    doc.text('Nexora Employee Report', 14, 10);
-
-    const tableData = this.employees.map(e => [
+    const rows = this.employees.map(e => [
       e.firstName + ' ' + e.lastName,
       e.email,
       e.departmentName,
@@ -116,18 +162,75 @@ export class EmployeeListComponent implements OnInit {
     ]);
 
     autoTable(doc, {
-      head: [[
-        'Name',
-        'Email',
-        'Department',
-        'Job Title',
-        'City',
-        'Country'
-      ]],
-      body: tableData,
-      startY: 20
+      head: [['Name', 'Email', 'Department', 'Job Title', 'City', 'Country']],
+      body: rows
     });
 
-    doc.save('nexora-employees.pdf');
+    doc.save('employees.pdf');
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  exportServerExcel() {
+
+    const payload = {
+      format: 1, // Excel
+      request: {
+        search: this.search || '',
+        sortField: this.sortColumn,
+        sortDir: this.sortDirection,
+        filters: {}
+      }
+    };
+
+    this.exportService.exportEmployees(payload)
+      .subscribe((response: Blob) => {
+
+        const blob = new Blob([response], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'employees.xlsx';
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      });
+  }
+
+  exportServerPdf() {
+
+    const payload = {
+      format: 2, // PDF
+      request: {
+        search: this.search || '',
+        sortField: this.sortColumn,
+        sortDir: this.sortDirection,
+        filters: {}
+      }
+    };
+
+    this.exportService.exportEmployees(payload)
+      .subscribe((response: Blob) => {
+
+        const blob = new Blob([response], {
+          type: 'application/pdf'
+        });
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'employees.pdf';
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      });
   }
 }

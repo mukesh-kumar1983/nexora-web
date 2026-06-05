@@ -1,0 +1,81 @@
+<div class="grid-container">
+
+  <!-- SEARCH -->
+  <div class="grid-toolbar" *ngIf="config.enableSearch">
+    <input type="text"
+           placeholder="Search..."
+           (input)="onSearch($event)" />
+  </div>
+
+  <!-- TABLE -->
+  <div class="grid-scroll">
+    <table class="grid-table">
+
+      <thead>
+        <tr>
+          <th *ngFor="let col of config.columns"
+              (click)="col.sortable && sort(col.field)"
+              [class.sortable]="col.sortable">
+
+            {{ col.header }}
+
+            <span *ngIf="col.sortable">
+
+              <!-- ASC -->
+              <span *ngIf="sortColumn === col.field && sortDirection === 'asc'"> ▲ </span>
+
+              <!-- DESC -->
+              <span *ngIf="sortColumn === col.field && sortDirection === 'desc'"> ▼ </span>
+
+              <!-- DEFAULT -->
+              <span *ngIf="sortColumn !== col.field"> ⇅ </span>
+
+            </span>
+
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of data">
+          <td *ngFor="let col of config.columns">
+            {{ row[col.field] }}
+          </td>
+        </tr>
+
+        <tr *ngIf="data.length === 0">
+          <td [attr.colspan]="config.columns.length" class="empty">
+            No data found
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination" *ngIf="config.enablePagination">
+
+    <button (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1">
+      Prev
+    </button>
+
+    <button *ngFor="let p of pages()"
+            (click)="changePage(p)"
+            [class.active]="p === currentPage">
+      {{ p }}
+    </button>
+
+    <button (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage === totalPages">
+      Next
+    </button>
+    <div class="grid-footer">
+      Page {{ currentPage }} of {{ totalCount }}
+      | Showing {{ startRecord }}–{{ endRecord }} of {{ totalCount }}
+    </div>
+
+  </div>
+</div>

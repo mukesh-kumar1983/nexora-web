@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 import { EmployeeService } from '../../services/employee.service';
 import { LookupService } from '../../services/lookup.service';
+import { Router } from '@angular/router';
+import { NotificationService } from '../../../../shared/notifications/notification.service';
 
 @Component({
   selector: 'app-create-employee',
@@ -33,7 +35,9 @@ export class CreateEmployeeComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
-    private lookupService: LookupService
+    private lookupService: LookupService,
+    private router: Router,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -127,9 +131,16 @@ export class CreateEmployeeComponent implements OnInit {
     };
 
     this.employeeService.createEmployee(payload)
-      .subscribe(() => {
-        this.form.reset();
-        this.currentStep = 0;
+      .subscribe({
+        next: () => {
+          this.form.reset();
+          this.currentStep = 0;
+          this.router.navigate(['/hr/employees']);
+        },
+        error: (res) => {
+          console.error(res);
+          this.notificationService.error('Failed to create employee. Please try again.');
+        }
       });
   }
 }

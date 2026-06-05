@@ -1,0 +1,178 @@
+/* =========================
+   ENTERPRISE DATA GRID V3
+   ========================= */
+
+.grid-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* =========================
+   TOOLBAR
+   ========================= */
+.grid-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+
+  input {
+    padding: 8px 10px;
+    width: 280px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+
+    &:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.15);
+    }
+  }
+}
+
+/* =========================
+   SCROLL WRAPPER (KEY FIX)
+   ========================= */
+.grid-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: #fff;
+}
+
+/* =========================
+   TABLE
+   ========================= */
+.grid-table {
+  width: max-content; /* IMPORTANT for horizontal scroll */
+  min-width: 100%; /* keeps normal look for small tables */
+  border-collapse: collapse;
+  background: #fff;
+}
+
+/* =========================
+   HEADER + CELLS
+   ========================= */
+.grid-table th,
+.grid-table td {
+  border: 1px solid #e0e0e0;
+  padding: 10px 12px;
+  text-align: left;
+  /* IMPORTANT: prevent ugly wrapping */
+  white-space: nowrap;
+}
+
+/* =========================
+   HEADER STYLE
+   ========================= */
+.grid-table th {
+  background: #f5f5f5;
+  font-weight: 600;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background: #e9e9e9;
+  }
+}
+
+/* Sort indicator spacing */
+.grid-table th span {
+  margin-left: 6px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Optional sortable class */
+.grid-table th.sortable {
+  cursor: pointer;
+}
+
+/* =========================
+   ROW HOVER
+   ========================= */
+.grid-table tbody tr:hover {
+  background: #fafafa;
+}
+
+/* =========================
+   EMPTY STATE
+   ========================= */
+.grid-table .empty {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
+
+/* =========================
+   PAGINATION
+   ========================= */
+.pagination {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 5px;
+
+  button {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.2s;
+
+    &:hover {
+      background: #f3f3f3;
+    }
+  }
+
+  button.active {
+    background: #1976d2;
+    color: white;
+    border-color: #1976d2;
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* =========================
+   GRID FOOTER (NEW)
+   ========================= */
+.grid-footer {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 13px;
+  color: #666;
+  margin-top: 5px;
+  padding: 4px 2px;
+}
+
+/* =========================
+   OPTIONAL: BETTER UX (ELLIPSIS)
+   Uncomment if you want clean truncation instead of full text
+   ========================= */
+/*
+.grid-table th,
+.grid-table td {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+*/
+
+/* =========================
+   STICKY HEADER (OPTIONAL UPGRADE)
+   ========================= */
+.grid-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
