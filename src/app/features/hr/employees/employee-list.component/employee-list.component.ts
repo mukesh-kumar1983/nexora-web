@@ -108,6 +108,7 @@ export class EmployeeListComponent implements OnInit {
   }
 
   onSort(event: any) {
+    this.page = 1;
     this.sortColumn = event.column;
     this.sortDirection = event.direction;
     this.loadEmployees();

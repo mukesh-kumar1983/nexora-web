@@ -79,5 +79,12 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'auth/login',
     pathMatch: 'full'
+  },
+  // ================= UNAUTHORIZED ROUTE =================
+  {
+    path: 'unauthorized',
+    loadComponent: () =>
+      import('./core/pages/unauthorized/unauthorized.component')
+        .then(m => m.UnauthorizedComponent)
   }
 ];
