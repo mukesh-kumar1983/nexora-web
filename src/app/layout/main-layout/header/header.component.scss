@@ -1,3 +1,4 @@
+
 .app-header {
   height: 64px;
   display: flex;
@@ -5,7 +6,7 @@
   align-items: center;
   padding: 0 22px;
   background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   color: #fff;
   position: sticky;
@@ -39,7 +40,6 @@
 .logo-text {
   font-size: 15px;
   font-weight: 600;
-  letter-spacing: 0.3px;
 }
 
 /* RIGHT */
@@ -58,11 +58,11 @@
 
 .role-badge {
   font-size: 11px;
-  background: rgba(37, 99, 235, 0.2);
-  color: #60a5fa;
   padding: 3px 8px;
   border-radius: 6px;
+  background: rgba(37, 99, 235, 0.15);
   border: 1px solid rgba(37, 99, 235, 0.3);
+  color: #60a5fa;
 }
 
 .user-name {
@@ -86,13 +86,13 @@
 /* DROPDOWN */
 .profile-dropdown {
   position: absolute;
-  top: 48px;
   right: 0;
+  top: 48px;
   width: 240px;
   background: #0f172a;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
   overflow: hidden;
 }
 

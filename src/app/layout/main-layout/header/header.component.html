@@ -1,3 +1,4 @@
+
 <header class="app-header">
 
   <div class="left-section">
@@ -23,8 +24,7 @@
 
         <button class="avatar-btn" (click)="toggleMenu()">
           <img class="profile-avatar"
-               [src]="u?.profileImageUrl || 'https://ui-avatars.com/api/?name=' + u?.fullName"
-               alt="Profile" />
+               [src]="u?.profileImageUrl || 'https://ui-avatars.com/api/?name=' + u?.fullName" />
         </button>
 
         <div class="profile-dropdown" *ngIf="menuOpen">
@@ -37,27 +37,23 @@
           <div class="divider"></div>
 
           <a routerLink="/hr/employees/my-profile" (click)="closeMenu()">
-            <i class="fa-solid fa-user"></i>
-            My Profile
+            <i class="fa-solid fa-user"></i> My Profile
           </a>
 
           <a *ngIf="canManageEmployees(u)"
              routerLink="/hr/employees/create-employee"
              (click)="closeMenu()">
-            <i class="fa-solid fa-user-plus"></i>
-            Add Employee
+            <i class="fa-solid fa-user-plus"></i> Add Employee
           </a>
 
           <a routerLink="/change-password" (click)="closeMenu()">
-            <i class="fa-solid fa-key"></i>
-            Change Password
+            <i class="fa-solid fa-key"></i> Change Password
           </a>
 
           <div class="divider"></div>
 
           <a class="logout" (click)="logout()">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
           </a>
 
         </div>
