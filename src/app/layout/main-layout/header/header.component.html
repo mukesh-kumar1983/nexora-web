@@ -1,57 +1,71 @@
-<nav (click)="menuOpen = false" class="navbar navbar-dark bg-dark px-3 d-flex justify-content-between">
+<header class="app-header">
 
-  <!-- LEFT -->
-  <span class="navbar-brand mb-0 h1">Nexora</span>
-
-  <!-- RIGHT -->
-  <div class="user-section" (click)="$event.stopPropagation()" *ngIf="userProfile$ | async as user">
-
-    <!-- Username -->
-    <span class="user-name">
-      {{ user.fullName }}
-    </span>
-
-    <!-- Avatar button -->
-    <button class="avatar-btn" (click)="toggleMenu()">
-      <img
-        class="profile-avatar"
-        [src]="user.profileImageUrl || 'https://ui-avatars.com/api/?name=' + user.fullName"
-        alt="Profile"
-      />
-    </button>
-
-    <!-- Dropdown -->
-    <div class="profile-dropdown" *ngIf="menuOpen">
-
-      <div class="dropdown-header">
-        <div class="name">{{ user.fullName }}</div>
-        <div class="email">{{ user.email }}</div>
-      </div>
-
-      <div class="divider"></div>
-
-      <a routerLink="/hr/employees/my-profile" (click)="closeMenu()">
-        <i-lucide name="user"></i-lucide>
-        My Profile
-      </a>
-
-      <a *ngIf="canManageEmployees(user)" routerLink="hr/employees/create-employee" (click)="closeMenu()">
-        <i-lucide name="user-plus"></i-lucide>
-        Add Employee
-      </a>
-
-      <a routerLink="/change-password" (click)="closeMenu()">
-        <i-lucide name="key"></i-lucide>
-        Change Password
-      </a>
-
-      <div class="divider"></div>
-
-      <a class="logout" (click)="logout()">
-        <i-lucide name="log-out"></i-lucide>
-        Logout
-      </a>
-
+  <div class="left-section">
+    <div class="logo">
+      <div class="logo-mark">N</div>
+      <div class="logo-text">Nexora Enterprise</div>
     </div>
   </div>
-</nav>
+
+  <div class="right-section">
+
+    <ng-container *ngIf="user$ | async as u">
+
+      <div class="user-section">
+
+        <span class="role-badge">
+          {{ u?.roles?.[0] || 'User' }}
+        </span>
+
+        <span class="user-name">
+          {{ u?.fullName }}
+        </span>
+
+        <button class="avatar-btn" (click)="toggleMenu()">
+          <img class="profile-avatar"
+               [src]="u?.profileImageUrl || 'https://ui-avatars.com/api/?name=' + u?.fullName"
+               alt="Profile" />
+        </button>
+
+        <div class="profile-dropdown" *ngIf="menuOpen">
+
+          <div class="dropdown-header">
+            <div class="name">{{ u?.fullName }}</div>
+            <div class="email">{{ u?.email }}</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <a routerLink="/hr/employees/my-profile" (click)="closeMenu()">
+            <i class="fa-solid fa-user"></i>
+            My Profile
+          </a>
+
+          <a *ngIf="canManageEmployees(u)"
+             routerLink="/hr/employees/create-employee"
+             (click)="closeMenu()">
+            <i class="fa-solid fa-user-plus"></i>
+            Add Employee
+          </a>
+
+          <a routerLink="/change-password" (click)="closeMenu()">
+            <i class="fa-solid fa-key"></i>
+            Change Password
+          </a>
+
+          <div class="divider"></div>
+
+          <a class="logout" (click)="logout()">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+          </a>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+  </div>
+
+</header>

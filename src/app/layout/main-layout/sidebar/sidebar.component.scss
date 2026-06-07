@@ -1,6 +1,7 @@
 .sidebar {
   width: 220px;
-  background: #111827;
+  background: #0b1220; /* darker than header */
+  border-right: 1px solid rgba(255,255,255,0.05);
   color: white;
   height: 100%;
   padding: 15px;
@@ -8,6 +9,7 @@
   flex-direction: column;
   gap: 10px;
 }
+
 
 a {
   color: #cbd5e1;
