@@ -1,178 +1,145 @@
 /* =========================
-   ENTERPRISE DATA GRID V3
+   NexoraEnterprise DataGrid v4
+   Lighter + interactive headers
    ========================= */
 
-.grid-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.datagrid-container {
+  background: #f8fafc; /* MUCH lighter */
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  color: #0f172a;
 }
 
-/* =========================
-   TOOLBAR
-   ========================= */
-.grid-toolbar {
+/* SCROLL AREA */
+.datagrid-scroll {
+  width: 100%;
+  overflow-x: auto;
+  background: #ffffff;
+}
+
+/* TABLE */
+.datagrid-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+/* HEADER */
+.datagrid-table thead {
+  background: #e2e8f0; /* light gray header */
+}
+
+.datagrid-table th {
+  padding: 14px;
+  text-align: left;
+  font-weight: 600;
+  color: #0f172a;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  white-space: nowrap;
+  /* 🔥 FIX: pointer cursor */
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* hover on header */
+.datagrid-table th:hover {
+  background: #cbd5e1;
+}
+
+/* header layout */
+.th-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
-
-  input {
-    padding: 8px 10px;
-    width: 280px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    outline: none;
-
-    &:focus {
-      border-color: #1976d2;
-      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.15);
-    }
-  }
 }
 
-/* =========================
-   SCROLL WRAPPER (KEY FIX)
-   ========================= */
-.grid-scroll {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  border: 1px solid #e5e5e5;
-  border-radius: 6px;
-  background: #fff;
-}
-
-/* =========================
-   TABLE
-   ========================= */
-.grid-table {
-  width: max-content; /* IMPORTANT for horizontal scroll */
-  min-width: 100%; /* keeps normal look for small tables */
-  border-collapse: collapse;
-  background: #fff;
-}
-
-/* =========================
-   HEADER + CELLS
-   ========================= */
-.grid-table th,
-.grid-table td {
-  border: 1px solid #e0e0e0;
-  padding: 10px 12px;
-  text-align: left;
-  /* IMPORTANT: prevent ugly wrapping */
+.th-title {
   white-space: nowrap;
 }
 
-/* =========================
-   HEADER STYLE
-   ========================= */
-.grid-table th {
-  background: #f5f5f5;
-  font-weight: 600;
-  position: relative;
-  cursor: pointer;
-  user-select: none;
-
-  &:hover {
-    background: #e9e9e9;
-  }
+.sort-icons {
+  font-size: 11px;
+  opacity: 0.6;
 }
 
-/* Sort indicator spacing */
-.grid-table th span {
-  margin-left: 6px;
-  font-size: 12px;
-  opacity: 0.7;
+/* BODY */
+.datagrid-table tbody {
+  background: #ffffff;
 }
 
-/* Optional sortable class */
-.grid-table th.sortable {
-  cursor: pointer;
-}
-
-/* =========================
-   ROW HOVER
-   ========================= */
-.grid-table tbody tr:hover {
-  background: #fafafa;
-}
-
-/* =========================
-   EMPTY STATE
-   ========================= */
-.grid-table .empty {
-  text-align: center;
-  padding: 20px;
-  color: #888;
-}
-
-/* =========================
-   PAGINATION
-   ========================= */
-.pagination {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  margin-top: 5px;
-
-  button {
-    padding: 6px 10px;
-    border: 1px solid #ccc;
-    background: white;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: 0.2s;
-
-    &:hover {
-      background: #f3f3f3;
-    }
-  }
-
-  button.active {
-    background: #1976d2;
-    color: white;
-    border-color: #1976d2;
-  }
-
-  button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-/* =========================
-   GRID FOOTER (NEW)
-   ========================= */
-.grid-footer {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 13px;
-  color: #666;
-  margin-top: 5px;
-  padding: 4px 2px;
-}
-
-/* =========================
-   OPTIONAL: BETTER UX (ELLIPSIS)
-   Uncomment if you want clean truncation instead of full text
-   ========================= */
-/*
-.grid-table th,
-.grid-table td {
-  max-width: 220px;
+.datagrid-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #1e293b;
 }
-*/
 
-/* =========================
-   STICKY HEADER (OPTIONAL UPGRADE)
-   ========================= */
-.grid-table thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
+/* row hover */
+.datagrid-table tbody tr:hover {
+  background: rgba(2, 132, 199, 0.06);
+}
+
+/* EMPTY */
+.empty {
+  text-align: center;
+  padding: 24px;
+  color: #64748b;
+}
+
+/* FOOTER */
+.datagrid-footer {
+  background: #f1f5f9;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 12px 14px;
+}
+
+/* pagination */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.pagination button:hover {
+  background: #e2e8f0;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* pages */
+.pages {
+  display: flex;
+  gap: 6px;
+}
+
+.pages button.active {
+  background: #0ea5e9;
+  border: none;
+  color: white;
+}
+
+/* info */
+.info {
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: #64748b;
 }

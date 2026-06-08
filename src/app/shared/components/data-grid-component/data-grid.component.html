@@ -1,15 +1,9 @@
-<div class="grid-container">
+<div class="datagrid-container">
 
-  <!-- SEARCH -->
-  <div class="grid-toolbar" *ngIf="config.enableSearch">
-    <input type="text"
-           placeholder="Search..."
-           (input)="onSearch($event)" />
-  </div>
+  <!-- TABLE SCROLL -->
+  <div class="datagrid-scroll">
 
-  <!-- TABLE -->
-  <div class="grid-scroll">
-    <table class="grid-table">
+    <table class="datagrid-table">
 
       <thead>
         <tr>
@@ -17,20 +11,15 @@
               (click)="col.sortable && sort(col.field)"
               [class.sortable]="col.sortable">
 
-            {{ col.header }}
+            <div class="th-inner">
+              <span class="th-title">{{ col.header }}</span>
 
-            <span *ngIf="col.sortable">
-
-              <!-- ASC -->
-              <span *ngIf="sortColumn === col.field && sortDirection === 'asc'"> ▲ </span>
-
-              <!-- DESC -->
-              <span *ngIf="sortColumn === col.field && sortDirection === 'desc'"> ▼ </span>
-
-              <!-- DEFAULT -->
-              <span *ngIf="sortColumn !== col.field"> ⇅ </span>
-
-            </span>
+              <span class="sort-icons" *ngIf="col.sortable">
+                <span *ngIf="sortColumn === col.field && sortDirection === 'asc'">▲</span>
+                <span *ngIf="sortColumn === col.field && sortDirection === 'desc'">▼</span>
+                <span *ngIf="sortColumn !== col.field">⇅</span>
+              </span>
+            </div>
 
           </th>
         </tr>
@@ -54,28 +43,34 @@
 
   </div>
 
-  <!-- PAGINATION -->
-  <div class="pagination" *ngIf="config.enablePagination">
+  <!-- FOOTER -->
+  <div class="datagrid-footer">
 
-    <button (click)="changePage(currentPage - 1)"
-            [disabled]="currentPage === 1">
-      Prev
-    </button>
+    <div class="pagination">
+      <button (click)="changePage(currentPage - 1)"
+              [disabled]="currentPage === 1">
+        Prev
+      </button>
 
-    <button *ngFor="let p of pages()"
-            (click)="changePage(p)"
-            [class.active]="p === currentPage">
-      {{ p }}
-    </button>
+      <div class="pages">
+        <button *ngFor="let p of pages()"
+                (click)="changePage(p)"
+                [class.active]="p === currentPage">
+          {{ p }}
+        </button>
+      </div>
 
-    <button (click)="changePage(currentPage + 1)"
-            [disabled]="currentPage === totalPages">
-      Next
-    </button>
-    <div class="grid-footer">
-      Page {{ currentPage }} of {{ totalCount }}
+      <button (click)="changePage(currentPage + 1)"
+              [disabled]="currentPage === totalPages">
+        Next
+      </button>
+    </div>
+
+    <div class="info">
+      Page {{ currentPage }} of {{ totalPages }}
       | Showing {{ startRecord }}–{{ endRecord }} of {{ totalCount }}
     </div>
 
   </div>
+
 </div>
