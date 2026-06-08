@@ -1,67 +1,71 @@
-
 <header class="app-header">
 
+  <!-- LEFT: LOGO -->
   <div class="left-section">
-    <div class="logo">
-      <div class="logo-mark">N</div>
-      <div class="logo-text">Nexora Enterprise</div>
+    <div class="logo-mark">
+      <img src="assets/NexoraEnterprise_Logo.png"
+           class="logo-img" style="width:200px !important; height:100px !important;"
+           alt="Nexora Enterprise" />
     </div>
+
+    <!-- Optional Brand Text -->
+    <!--<div class="logo-text">
+      Nexora Enterprise
+    </div>-->
   </div>
 
-  <div class="right-section">
+  <!-- RIGHT: USER SECTION -->
+  <ng-container *ngIf="user$ | async as u">
 
-    <ng-container *ngIf="user$ | async as u">
+    <div class="user-section">
 
-      <div class="user-section">
+      <span class="role-badge">
+        {{ u?.roles?.[0] || 'User' }}
+      </span>
 
-        <span class="role-badge">
-          {{ u?.roles?.[0] || 'User' }}
-        </span>
+      <span class="user-name">
+        {{ u?.fullName }}
+      </span>
 
-        <span class="user-name">
-          {{ u?.fullName }}
-        </span>
+      <button class="avatar-btn" (click)="toggleMenu()">
+        <img class="profile-avatar"
+             [src]="u?.profileImageUrl || 'https://ui-avatars.com/api/?name=' + u?.fullName" />
+      </button>
 
-        <button class="avatar-btn" (click)="toggleMenu()">
-          <img class="profile-avatar"
-               [src]="u?.profileImageUrl || 'https://ui-avatars.com/api/?name=' + u?.fullName" />
-        </button>
+      <!-- DROPDOWN -->
+      <div class="profile-dropdown" *ngIf="menuOpen">
 
-        <div class="profile-dropdown" *ngIf="menuOpen">
-
-          <div class="dropdown-header">
-            <div class="name">{{ u?.fullName }}</div>
-            <div class="email">{{ u?.email }}</div>
-          </div>
-
-          <div class="divider"></div>
-
-          <a routerLink="/hr/employees/my-profile" (click)="closeMenu()">
-            <i class="fa-solid fa-user"></i> My Profile
-          </a>
-
-          <a *ngIf="canManageEmployees(u)"
-             routerLink="/hr/employees/create-employee"
-             (click)="closeMenu()">
-            <i class="fa-solid fa-user-plus"></i> Add Employee
-          </a>
-
-          <a routerLink="/change-password" (click)="closeMenu()">
-            <i class="fa-solid fa-key"></i> Change Password
-          </a>
-
-          <div class="divider"></div>
-
-          <a class="logout" (click)="logout()">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout
-          </a>
-
+        <div class="dropdown-header">
+          <div class="name">{{ u?.fullName }}</div>
+          <div class="email">{{ u?.email }}</div>
         </div>
+
+        <div class="divider"></div>
+
+        <a routerLink="/hr/employees/my-profile" (click)="closeMenu()">
+          <i class="fa-solid fa-user"></i> My Profile
+        </a>
+
+        <a *ngIf="canManageEmployees(u)"
+           routerLink="/hr/employees/create-employee"
+           (click)="closeMenu()">
+          <i class="fa-solid fa-user-plus"></i> Add Employee
+        </a>
+
+        <a routerLink="/change-password" (click)="closeMenu()">
+          <i class="fa-solid fa-key"></i> Change Password
+        </a>
+
+        <div class="divider"></div>
+
+        <a class="logout" (click)="logout()">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a>
 
       </div>
 
-    </ng-container>
+    </div>
 
-  </div>
+  </ng-container>
 
 </header>

@@ -1,113 +1,146 @@
-
+/* =========================
+   APP HEADER
+========================= */
 .app-header {
   height: 64px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 0 22px;
   background: rgba(15, 23, 42, 0.92);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   color: #fff;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-/* LEFT */
+/* =========================
+   LEFT SECTION
+========================= */
 .left-section {
-  display: flex;
-  align-items: center;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #2563eb, #10b981);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-}
-
-.logo-text {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-/* RIGHT */
-.right-section {
   display: flex;
   align-items: center;
   gap: 14px;
 }
 
-.user-section {
+/* LOGO WRAPPER */
+.logo-mark {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
+}
+
+/* LOGO IMAGE */
+.logo-img {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+}
+
+/* =========================
+   BRAND TEXT (FIXED PROPERLY)
+========================= */
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+/* MAIN BRAND NAME */
+.brand-main {
+  font-size: 16px;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: 0.4px;
+}
+
+/* SUB BRAND (Enterprise) */
+.brand-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: #94a3b8;
+  letter-spacing: 0.6px;
+}
+
+/* =========================
+   USER SECTION
+========================= */
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   position: relative;
 }
 
 .role-badge {
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: rgba(37, 99, 235, 0.15);
-  border: 1px solid rgba(37, 99, 235, 0.3);
-  color: #60a5fa;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .user-name {
-  font-size: 13px;
-  opacity: 0.9;
+  font-size: 14px;
+  font-weight: 500;
+  color: #e5e7eb;
 }
 
 .avatar-btn {
   border: none;
   background: transparent;
   cursor: pointer;
+  padding: 0;
 }
 
 .profile-avatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.1);
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.15);
 }
 
-/* DROPDOWN */
+/* =========================
+   DROPDOWN
+========================= */
 .profile-dropdown {
   position: absolute;
-  right: 0;
   top: 48px;
+  right: 0;
   width: 240px;
   background: #0f172a;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
   overflow: hidden;
+  animation: fadeIn 0.15s ease-in-out;
+  z-index: 9999;
 }
 
 .dropdown-header {
   padding: 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
 .dropdown-header .name {
   font-weight: 600;
+  color: #fff;
 }
 
 .dropdown-header .email {
   font-size: 12px;
-  opacity: 0.6;
+  color: #94a3b8;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .profile-dropdown a {
@@ -115,26 +148,28 @@
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
+  font-size: 13px;
   color: #e5e7eb;
   text-decoration: none;
-  font-size: 13px;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
 .profile-dropdown a:hover {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.profile-dropdown i {
-  width: 18px;
-  color: #94a3b8;
+.profile-dropdown a.logout {
+  color: #f87171;
 }
 
-.divider {
-  height: 1px;
-  background: rgba(255,255,255,0.08);
-}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 
-.logout {
-  color: #f87171 !important;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

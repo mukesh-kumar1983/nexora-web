@@ -12,4 +12,10 @@ import { FooterComponent } from './footer/footer.component';
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
 })
-export class MainLayoutComponent {}
+export class MainLayoutComponent {
+  isSidebarCollapsed = false;
+
+  onSidebarCollapse(state: boolean): void {
+    this.isSidebarCollapsed = state;
+  }
+}

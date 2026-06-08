@@ -1,31 +1,18 @@
-
 .layout {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #0b1220;
 }
 
-/* BODY STRUCTURE */
 .body {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-/* SIDEBAR */
-.sidebar {
-  width: 260px;
-  background: #0b1220;
-  border-right: 1px solid rgba(255,255,255,0.06);
-  transition: 0.3s;
-}
-
-/* CONTENT AREA */
 .content {
   flex: 1;
   padding: 20px;
+  background: #f1f5f9;
   overflow-y: auto;
-  background: #f1f5f9; /* SaaS canvas */
-  border-top-left-radius: 14px;
 }

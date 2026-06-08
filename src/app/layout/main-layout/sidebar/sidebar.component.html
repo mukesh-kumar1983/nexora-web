@@ -1,13 +1,91 @@
-<div class="sidebar">
+<nav class="sidebar" [class.collapsed]="isCollapsed">
 
-  <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+  <!-- TOGGLE -->
+  <div class="sidebar-toggle">
+    <button (click)="toggleSidebar()">
+      <i class="fa-solid"
+         [ngClass]="isCollapsed ? 'fa-angles-right' : 'fa-angles-left'"></i>
+    </button>
+  </div>
 
-  <a routerLink="/hr/employees" routerLinkActive="active">Employees</a>
+  <!-- DASHBOARD -->
+  <div class="sidebar-section" *ngIf="!isCollapsed">Main</div>
 
-  <a routerLink="/products" routerLinkActive="active">Products</a>
+  <a class="sidebar-item"
+     routerLink="/dashboard"
+     routerLinkActive="active"
+     [routerLinkActiveOptions]="{ exact: true }"
+     (mouseenter)="setTooltip('Dashboard')"
+     (mouseleave)="clearTooltip()">
 
-  <a routerLink="/orders" routerLinkActive="active">Orders</a>
+    <i class="fa-solid fa-gauge"></i>
+    <span>Dashboard</span>
 
-  <a routerLink="/payments" routerLinkActive="active">Payments</a>
+    <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Dashboard'">
+      Dashboard
+    </div>
+  </a>
 
-</div>
+  <!-- EMPLOYEES -->
+  <div class="sidebar-section" *ngIf="!isCollapsed">HR</div>
+
+  <a class="sidebar-item"
+     routerLink="/hr/employees"
+     routerLinkActive="active"
+     (mouseenter)="setTooltip('Employees')"
+     (mouseleave)="clearTooltip()">
+
+    <i class="fa-solid fa-users"></i>
+    <span>Employees</span>
+
+    <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Employees'">
+      Employees
+    </div>
+  </a>
+
+  <a class="sidebar-item"
+     routerLink="/hr/employees/create-employee"
+     routerLinkActive="active"
+     (mouseenter)="setTooltip('Add Employee')"
+     (mouseleave)="clearTooltip()">
+
+    <i class="fa-solid fa-user-plus"></i>
+    <span>Add Employee</span>
+
+    <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Add Employee'">
+      Add Employee
+    </div>
+  </a>
+
+  <!-- MANAGEMENT -->
+  <div class="sidebar-section" *ngIf="!isCollapsed">Management</div>
+
+  <a class="sidebar-item"
+     routerLink="/departments"
+     routerLinkActive="active"
+     (mouseenter)="setTooltip('Departments')"
+     (mouseleave)="clearTooltip()">
+
+    <i class="fa-solid fa-building"></i>
+    <span>Departments</span>
+
+    <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Departments'">
+      Departments
+    </div>
+  </a>
+
+  <a class="sidebar-item"
+     routerLink="/designations"
+     routerLinkActive="active"
+     (mouseenter)="setTooltip('Designations')"
+     (mouseleave)="clearTooltip()">
+
+    <i class="fa-solid fa-id-badge"></i>
+    <span>Designations</span>
+
+    <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Designations'">
+      Designations
+    </div>
+  </a>
+
+</nav>

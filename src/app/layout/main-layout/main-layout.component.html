@@ -1,15 +1,19 @@
+
 <div class="layout">
 
   <app-header></app-header>
 
   <div class="body">
 
-    <aside class="sidebar">
-      <app-sidebar></app-sidebar>
-    </aside>
+    <!-- SIDEBAR -->
+    <app-sidebar (collapsedChange)="onSidebarCollapse($event)"></app-sidebar>
 
-    <main class="content">
+    <!-- CONTENT -->
+    <main class="content"
+          [class.collapsed]="isSidebarCollapsed">
+
       <router-outlet></router-outlet>
+
     </main>
 
   </div>
