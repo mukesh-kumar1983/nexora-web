@@ -1,8 +1,14 @@
 export interface AuthResponse {
-  //token: string;
-  refreshToken: string;
-  expiresAt: string;
   success: boolean;
   message: string;
-  data: any;
+
+  token: string;
+  refreshToken: string;
+  expiresAt: string;
+
+  email: string;
+  userId: string;
+  tenantId: string;
+
+  roles: string[];
 }

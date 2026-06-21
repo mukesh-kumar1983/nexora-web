@@ -1,112 +1,68 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { LoginRequest } from '../models/login-request.model';
+import { AuthResponse } from '../models/auth-response.model';
+import { UserContextService } from './user-context.service';
+import { JwtHelper } from '../auth/helpers/jwt.helper';
 import { environment } from '../../../environments/environment';
 
-export interface CurrentUser {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  profileImageUrl?: string;
-  roles: string[];
-}
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
 
-  baseUrl = environment.apiUrl;
+  private tokenKey = 'auth_token';
 
-  constructor(private http: HttpClient) { } 
+  private authState$ = new BehaviorSubject<string | null>(null);
+  token$ = this.authState$.asObservable();
 
-  private currentUserSubject = new BehaviorSubject<CurrentUser | null>(this.loadUser());
-  currentUser$ = this.currentUserSubject.asObservable();
-
-  // -------------------------
-  // GET CURRENT USER
-  // -------------------------
-  getCurrentUser(): CurrentUser | null {
-    return this.currentUserSubject.value;
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private userContext: UserContextService,
+    private jwtHelper: JwtHelper
+  ) {
+    this.loadFromStorage();
   }
 
-  // -------------------------
-  // UPDATE PROFILE (IMPORTANT)
-  // -------------------------
-  updateProfile(profile: Partial<CurrentUser>) {
-
-    const current = this.currentUserSubject.value;
-    if (!current) return;
-
-    const updated: CurrentUser = {
-      ...current,
-      firstName: profile.firstName ?? current.firstName,
-      lastName: profile.lastName ?? current.lastName,
-      fullName: `${profile.firstName ?? current.firstName} ${profile.lastName ?? current.lastName}`,
-      profileImageUrl: profile.profileImageUrl ?? current.profileImageUrl
-    };
-
-    this.currentUserSubject.next(updated);
-    localStorage.setItem('user', JSON.stringify(updated));
+  login(request: LoginRequest) {
+    return this.http.post<AuthResponse>(
+      `${environment.apiUrl}/auth/login`,
+      request
+    );
   }
 
-  // -------------------------
-  // LOAD FROM LOCAL STORAGE
-  // -------------------------
-  private loadUser(): CurrentUser | null {
-    const data = localStorage.getItem('user');
-    return data ? JSON.parse(data) : null;
+  setSession(response: AuthResponse) {
+    const token = response.token;
+
+    localStorage.setItem(this.tokenKey, token);
+    this.authState$.next(token);
+
+    const user = this.jwtHelper.decode(token);
+    this.userContext.setUser(user);
   }
 
-  // =========================
-  // LOGIN API
-  // =========================
-  login(model: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/auth/login`, model);
+  logout() {
+    localStorage.removeItem(this.tokenKey);
+    this.authState$.next(null);
+    this.userContext.clear();
+    this.router.navigate(['/auth/login']);
   }
 
-  logout(): void {
+  private loadFromStorage() {
+    const token = localStorage.getItem(this.tokenKey);
 
-    // 1. Clear BehaviorSubject (IMPORTANT for header update)
-    this.currentUserSubject.next(null);
+    if (token) {
+      this.authState$.next(token);
 
-    // 2. Clear local storage
-    localStorage.removeItem('user');
-    localStorage.removeItem('current_user');
-    localStorage.removeItem('token'); // if you store JWT
-
-    // 3. Optional: clear session storage (if used)
-    sessionStorage.clear();
-
+      const user = this.jwtHelper.decode(token);
+      this.userContext.setUser(user);
+    }
   }
 
   isLoggedIn(): boolean {
-    return this.currentUserSubject.value !== null;
-  }
-
-  getRoles(): string[] {
-    return this.currentUserSubject.value?.roles ?? [];
-  }
-
-  saveToken(token: string) {
-    localStorage.setItem('token', token);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('token');
-  }
-
-  setCurrentUser(user: CurrentUser): void {
-    this.currentUserSubject.next(user);
-    localStorage.setItem('user', JSON.stringify(user));
-  }
-
-  rehydrateUser(): void {
-    const data = localStorage.getItem('user');
-
-    if (!data) return;
-
-    const user: CurrentUser = JSON.parse(data);
-    this.currentUserSubject.next(user);
+    return !!this.authState$.value;
   }
 }

@@ -1,64 +1,84 @@
-<nav class="sidebar" [class.collapsed]="isCollapsed">
+<ul class="menu">
+  <li *ngFor="let item of menu">
 
-  <!-- TOGGLE -->
-  <div class="sidebar-toggle">
-    <button (click)="toggleSidebar()">
-      <i class="fa-solid"
-         [ngClass]="isCollapsed ? 'fa-angles-right' : 'fa-angles-left'"></i>
-    </button>
+    <a *ngIf="item.route" [routerLink]="item.route">
+      {{ item.label }}
+    </a>
+
+    <div *ngIf="item.children">
+      <span>{{ item.label }}</span>
+
+      <ul>
+        <li *ngFor="let child of item.children">
+          <a [routerLink]="child.route">
+            {{ child.label }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </li>
+</ul>
+
+
+<!--===============================OLD SIDEBAR HTML===============================-->
+<!--<nav class="sidebar" [class.collapsed]="isCollapsed">-->
+<!-- TOGGLE -->
+<!--<div class="sidebar-toggle">
+  <button (click)="toggleSidebar()">
+    <i class="fa-solid"
+       [ngClass]="isCollapsed ? 'fa-angles-right' : 'fa-angles-left'"></i>
+  </button>
+</div>-->
+<!-- DASHBOARD -->
+<!--<div class="sidebar-section" *ngIf="!isCollapsed">Main</div>
+
+<a class="sidebar-item"
+   routerLink="/dashboard"
+   routerLinkActive="active"
+   [routerLinkActiveOptions]="{ exact: true }"
+   (mouseenter)="setTooltip('Dashboard')"
+   (mouseleave)="clearTooltip()">
+
+  <i class="fa-solid fa-gauge"></i>
+  <span>Dashboard</span>
+
+  <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Dashboard'">
+    Dashboard
   </div>
+</a>-->
+<!-- EMPLOYEES -->
+<!--<div class="sidebar-section" *ngIf="!isCollapsed">HR</div>
 
-  <!-- DASHBOARD -->
-  <div class="sidebar-section" *ngIf="!isCollapsed">Main</div>
+<a class="sidebar-item"
+   routerLink="/hr/employees"
+   routerLinkActive="active"
+   (mouseenter)="setTooltip('Employees')"
+   (mouseleave)="clearTooltip()">
 
-  <a class="sidebar-item"
-     routerLink="/dashboard"
-     routerLinkActive="active"
-     [routerLinkActiveOptions]="{ exact: true }"
-     (mouseenter)="setTooltip('Dashboard')"
-     (mouseleave)="clearTooltip()">
+  <i class="fa-solid fa-users"></i>
+  <span>Employees</span>
 
-    <i class="fa-solid fa-gauge"></i>
-    <span>Dashboard</span>
+  <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Employees'">
+    Employees
+  </div>
+</a>
 
-    <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Dashboard'">
-      Dashboard
-    </div>
-  </a>
+<a class="sidebar-item"
+   routerLink="/hr/employees/create-employee"
+   routerLinkActive="active"
+   (mouseenter)="setTooltip('Add Employee')"
+   (mouseleave)="clearTooltip()">
 
-  <!-- EMPLOYEES -->
-  <div class="sidebar-section" *ngIf="!isCollapsed">HR</div>
+  <i class="fa-solid fa-user-plus"></i>
+  <span>Add Employee</span>
 
-  <a class="sidebar-item"
-     routerLink="/hr/employees"
-     routerLinkActive="active"
-     (mouseenter)="setTooltip('Employees')"
-     (mouseleave)="clearTooltip()">
-
-    <i class="fa-solid fa-users"></i>
-    <span>Employees</span>
-
-    <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Employees'">
-      Employees
-    </div>
-  </a>
-
-  <a class="sidebar-item"
-     routerLink="/hr/employees/create-employee"
-     routerLinkActive="active"
-     (mouseenter)="setTooltip('Add Employee')"
-     (mouseleave)="clearTooltip()">
-
-    <i class="fa-solid fa-user-plus"></i>
-    <span>Add Employee</span>
-
-    <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Add Employee'">
-      Add Employee
-    </div>
-  </a>
-
-  <!-- MANAGEMENT -->
-  <div class="sidebar-section" *ngIf="!isCollapsed">Management</div>
+  <div class="tooltip" *ngIf="isCollapsed && activeTooltip === 'Add Employee'">
+    Add Employee
+  </div>
+</a>-->
+<!-- MANAGEMENT -->
+<!--<div class="sidebar-section" *ngIf="!isCollapsed">Management</div>
 
   <a class="sidebar-item"
      routerLink="/departments"
@@ -88,4 +108,4 @@
     </div>
   </a>
 
-</nav>
+</nav>-->
